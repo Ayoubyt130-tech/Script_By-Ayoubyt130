@@ -1,6 +1,4 @@
 local player = game.Players.LocalPlayer
-local RunService = game:GetService("RunService")
-
 local main = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local onof = Instance.new("TextButton")
@@ -43,7 +41,12 @@ local flying = false
 local speeds = 1
 local maxSpeed = 100
 local flyConnection
-local flySound
+
+-- 🎵 صوت الطيران
+local flySound = Instance.new("Sound")
+flySound.SoundId = "rbxassetid://132563559976693"
+flySound.Volume = 1
+flySound.Looped = true
 
 ---------------------------------------------------
 
@@ -64,36 +67,28 @@ local function startFlying()
 	local char = player.Character
 	if not char then return end
 	local hrp = char:WaitForChild("HumanoidRootPart")
-	local hum = char:WaitForChild("Humanoid")
 
 	flying = true
 
-	-- 🎵 صوت للجميع (ينحط في Workspace)
-	flySound = Instance.new("Sound")
-	flySound.SoundId = "rbxassetid://132563559976693"
-	flySound.Volume = 1
-	flySound.Looped = true
-	flySound.Parent = workspace
+	flySound.Parent = hrp
 	flySound:Play()
 
-	flyConnection = RunService.Heartbeat:Connect(function()
-		if flying and hum.MoveDirection.Magnitude > 0 then
-			hrp.CFrame = hrp.CFrame + (hum.MoveDirection * speeds)
+	flyConnection = game:GetService("RunService").Heartbeat:Connect(function()
+		if flying and char and char:FindFirstChild("Humanoid") then
+			local hum = char:FindFirstChild("Humanoid")
+			if hum.MoveDirection.Magnitude > 0 then
+				hrp.CFrame = hrp.CFrame + (hum.MoveDirection * speeds)
+			end
 		end
 	end)
 end
 
 local function stopFlying()
 	flying = false
-	
 	if flyConnection then
 		flyConnection:Disconnect()
 	end
-	
-	if flySound then
-		flySound:Stop()
-		flySound:Destroy()
-	end
+	flySound:Stop()
 end
 
 ---------------------------------------------------
@@ -110,6 +105,8 @@ closebutton.MouseButton1Click:Connect(function()
 	stopFlying()
 	main:Destroy()
 end)
+
+---------------------------------------------------
 
 player.CharacterAdded:Connect(function()
 	stopFlying()
