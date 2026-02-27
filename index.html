@@ -1,80 +1,53 @@
---// Player
 local player = game.Players.LocalPlayer
 local RunService = game:GetService("RunService")
 
---// GUI
 local main = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
-local up = Instance.new("TextButton")
-local down = Instance.new("TextButton")
 local onof = Instance.new("TextButton")
 local speedBox = Instance.new("TextBox")
 local closebutton = Instance.new("TextButton")
-local mini = Instance.new("TextButton")
-local mini2 = Instance.new("TextButton")
 
-main.Name = "FlyGuiV3"
+main.Name = "FlyGuiOptimized"
 main.Parent = player:WaitForChild("PlayerGui")
 main.ResetOnSpawn = false
 
 Frame.Parent = main
-Frame.Size = UDim2.new(0,200,0,120)
+Frame.Size = UDim2.new(0,200,0,100)
 Frame.Position = UDim2.new(0.1,0,0.4,0)
 Frame.BackgroundColor3 = Color3.fromRGB(163,255,137)
 Frame.Active = true
 Frame.Draggable = true
 
-up.Parent = Frame
-up.Size = UDim2.new(0,90,0,30)
-up.Position = UDim2.new(0,5,0,5)
-up.Text = "UP"
-
-down.Parent = Frame
-down.Size = UDim2.new(0,90,0,30)
-down.Position = UDim2.new(0,5,0,40)
-down.Text = "DOWN"
-
 onof.Parent = Frame
-onof.Size = UDim2.new(0,90,0,30)
-onof.Position = UDim2.new(0,100,0,5)
+onof.Size = UDim2.new(0,180,0,40)
+onof.Position = UDim2.new(0,10,0,10)
 onof.Text = "FLY"
+onof.BackgroundColor3 = Color3.fromRGB(255,249,74)
 
 speedBox.Parent = Frame
-speedBox.Size = UDim2.new(0,90,0,30)
-speedBox.Position = UDim2.new(0,100,0,40)
+speedBox.Size = UDim2.new(0,180,0,30)
+speedBox.Position = UDim2.new(0,10,0,55)
 speedBox.Text = "1"
 speedBox.ClearTextOnFocus = false
+speedBox.BackgroundColor3 = Color3.fromRGB(255,85,0)
 
 closebutton.Parent = Frame
 closebutton.Size = UDim2.new(0,25,0,25)
 closebutton.Position = UDim2.new(1,-30,0,5)
 closebutton.Text = "X"
+closebutton.BackgroundColor3 = Color3.fromRGB(255,0,0)
 
-mini.Parent = Frame
-mini.Size = UDim2.new(0,25,0,25)
-mini.Position = UDim2.new(1,-60,0,5)
-mini.Text = "-"
+---------------------------------------------------
 
-mini2.Parent = Frame
-mini2.Size = UDim2.new(0,25,0,25)
-mini2.Position = UDim2.new(1,-60,0,35)
-mini2.Text = "+"
-mini2.Visible = false
-
---// Variables
 local flying = false
 local speeds = 1
 local maxSpeed = 100
 local flyConnection
 local flySound
 
---// Sound
-flySound = Instance.new("Sound")
-flySound.SoundId = "rbxassetid://132563559976693"
-flySound.Volume = 1
-flySound.Looped = true
+---------------------------------------------------
 
---// Speed Input
+-- تحديث السرعة عند الكتابة
 speedBox.FocusLost:Connect(function()
 	local num = tonumber(speedBox.Text)
 	if num and num >= 1 then
@@ -85,7 +58,8 @@ speedBox.FocusLost:Connect(function()
 	end
 end)
 
---// Fly System
+---------------------------------------------------
+
 local function startFlying()
 	local char = player.Character
 	if not char then return end
@@ -94,7 +68,12 @@ local function startFlying()
 
 	flying = true
 
-	flySound.Parent = hrp
+	-- 🎵 صوت للجميع (ينحط في Workspace)
+	flySound = Instance.new("Sound")
+	flySound.SoundId = "rbxassetid://132563559976693"
+	flySound.Volume = 1
+	flySound.Looped = true
+	flySound.Parent = workspace
 	flySound:Play()
 
 	flyConnection = RunService.Heartbeat:Connect(function()
@@ -106,15 +85,19 @@ end
 
 local function stopFlying()
 	flying = false
+	
 	if flyConnection then
 		flyConnection:Disconnect()
 	end
+	
 	if flySound then
 		flySound:Stop()
+		flySound:Destroy()
 	end
 end
 
---// Buttons
+---------------------------------------------------
+
 onof.MouseButton1Click:Connect(function()
 	if flying then
 		stopFlying()
@@ -123,40 +106,9 @@ onof.MouseButton1Click:Connect(function()
 	end
 end)
 
-up.MouseButton1Click:Connect(function()
-	local char = player.Character
-	if char then
-		char.HumanoidRootPart.CFrame *= CFrame.new(0,5,0)
-	end
-end)
-
-down.MouseButton1Click:Connect(function()
-	local char = player.Character
-	if char then
-		char.HumanoidRootPart.CFrame *= CFrame.new(0,-5,0)
-	end
-end)
-
 closebutton.MouseButton1Click:Connect(function()
 	stopFlying()
 	main:Destroy()
-end)
-
-mini.MouseButton1Click:Connect(function()
-	for _,v in pairs(Frame:GetChildren()) do
-		if v ~= mini and v ~= mini2 then
-			v.Visible = false
-		end
-	end
-	mini.Visible = false
-	mini2.Visible = true
-end)
-
-mini2.MouseButton1Click:Connect(function()
-	for _,v in pairs(Frame:GetChildren()) do
-		v.Visible = true
-	end
-	mini2.Visible = false
 end)
 
 player.CharacterAdded:Connect(function()
