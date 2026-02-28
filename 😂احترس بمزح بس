@@ -1,5 +1,11 @@
 local player = game.Players.LocalPlayer
 local workspace = game:GetService("Workspace")
+local StarterGui = game:GetService("StarterGui")
+
+-- تعطيل زر Reset الرسمي
+pcall(function()
+	StarterGui:SetCore("ResetButtonCallback", false)
+end)
 
 -- GUI لفتح وغلق
 local toggleGui = Instance.new("ScreenGui")
@@ -28,6 +34,17 @@ Frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
 Frame.Active = true
 Frame.Draggable = true
 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0,12)
+
+-- كتابة فوق الإطار
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Parent = Frame
+titleLabel.Size = UDim2.new(1,0,0,25)
+titleLabel.Position = UDim2.new(0,0,0,0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "مزاح ايوب"
+titleLabel.TextColor3 = Color3.new(1,1,1)
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextSize = 18
 
 local abzButton = Instance.new("TextButton")
 abzButton.Parent = Frame
@@ -65,23 +82,19 @@ flashImage.BackgroundTransparency = 1
 flashImage.Image = "rbxassetid://8772146864"
 flashImage.Visible = false
 
--- fling extreme: يجعل اللاعب يبتعد بعيد جدًا
 local function flingExtreme(targetPlayer)
 	local char = targetPlayer.Character
 	if not char or not char:FindFirstChild("HumanoidRootPart") then return end
 	local hrp = char.HumanoidRootPart
 
-	-- تعطيل التحكم بالـ Humanoid مؤقتاً
 	if char:FindFirstChild("Humanoid") then
 		char.Humanoid.PlatformStand = true
 	end
 
-	-- تعيين AssemblyLinearVelocity لقيمة ضخمة
 	hrp.AssemblyLinearVelocity = Vector3.new(
 		math.random(-1000,1000), 2000, math.random(-1000,1000)
 	)
 
-	-- بعد فترة قصيرة استرجاع التحكم (يمكن تحذف إذا تريد يظل بعيد)
 	task.delay(3, function()
 		if char and char:FindFirstChild("Humanoid") then
 			char.Humanoid.PlatformStand = false
