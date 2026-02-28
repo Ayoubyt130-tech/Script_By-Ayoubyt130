@@ -1,0 +1,111 @@
+local player = game.Players.LocalPlayer
+local workspace = game:GetService("Workspace")
+
+-- GUI لفتح وغلق
+local toggleGui = Instance.new("ScreenGui")
+toggleGui.Parent = player:WaitForChild("PlayerGui")
+toggleGui.ResetOnSpawn = false
+
+local imageButton = Instance.new("ImageButton")
+imageButton.Parent = toggleGui
+imageButton.Size = UDim2.new(0,80,0,80)
+imageButton.Position = UDim2.new(0,20,0.5,-40)
+imageButton.Image = "rbxassetid://6421296789"
+imageButton.BackgroundTransparency = 1
+Instance.new("UICorner", imageButton).CornerRadius = UDim.new(1,0)
+
+-- Main GUI
+local main = Instance.new("ScreenGui")
+main.Parent = player.PlayerGui
+main.Enabled = false
+main.ResetOnSpawn = false
+
+local Frame = Instance.new("Frame")
+Frame.Parent = main
+Frame.Size = UDim2.new(0,230,0,130)
+Frame.Position = UDim2.new(0.4,0,0.4,0)
+Frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
+Frame.Active = true
+Frame.Draggable = true
+Instance.new("UICorner", Frame).CornerRadius = UDim.new(0,12)
+
+local abzButton = Instance.new("TextButton")
+abzButton.Parent = Frame
+abzButton.Size = UDim2.new(0,180,0,50)
+abzButton.Position = UDim2.new(0.5,-90,0.5,-25)
+abzButton.Text = "عبز"
+abzButton.TextColor3 = Color3.new(1,1,1)
+abzButton.BackgroundColor3 = Color3.fromRGB(70,70,70)
+abzButton.Font = Enum.Font.GothamBold
+abzButton.TextSize = 22
+Instance.new("UICorner", abzButton).CornerRadius = UDim.new(0,10)
+
+local close = Instance.new("TextButton")
+close.Parent = Frame
+close.Size = UDim2.new(0,25,0,25)
+close.Position = UDim2.new(1,-30,0,5)
+close.Text = "X"
+close.TextColor3 = Color3.new(1,1,1)
+close.BackgroundColor3 = Color3.fromRGB(200,0,0)
+close.Font = Enum.Font.GothamBold
+close.TextSize = 14
+Instance.new("UICorner", close).CornerRadius = UDim.new(0,6)
+
+-- الصوت
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://17620645740"
+sound.Volume = 100
+sound.Parent = workspace
+
+-- فلاش الصورة
+local flashImage = Instance.new("ImageLabel")
+flashImage.Parent = main
+flashImage.Size = UDim2.new(1,0,1,0)
+flashImage.BackgroundTransparency = 1
+flashImage.Image = "rbxassetid://6421296789"
+flashImage.Visible = false
+
+-- fling extreme: يجعل اللاعب يبتعد بعيد جدًا
+local function flingExtreme(targetPlayer)
+	local char = targetPlayer.Character
+	if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+	local hrp = char.HumanoidRootPart
+
+	-- تعطيل التحكم بالـ Humanoid مؤقتاً
+	if char:FindFirstChild("Humanoid") then
+		char.Humanoid.PlatformStand = true
+	end
+
+	-- تعيين AssemblyLinearVelocity لقيمة ضخمة
+	hrp.AssemblyLinearVelocity = Vector3.new(
+		math.random(-1000,1000), 2000, math.random(-1000,1000)
+	)
+
+	-- بعد فترة قصيرة استرجاع التحكم (يمكن تحذف إذا تريد يظل بعيد)
+	task.delay(3, function()
+		if char and char:FindFirstChild("Humanoid") then
+			char.Humanoid.PlatformStand = false
+		end
+	end)
+end
+
+local function activate()
+	sound:Play()
+	flashImage.Visible = true
+	task.wait(3)
+	flashImage.Visible = false
+
+	flingExtreme(player)
+end
+
+imageButton.MouseButton1Click:Connect(function()
+	main.Enabled = not main.Enabled
+end)
+
+abzButton.MouseButton1Click:Connect(function()
+	activate()
+end)
+
+close.MouseButton1Click:Connect(function()
+	main.Enabled = false
+end)
