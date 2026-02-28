@@ -33,7 +33,7 @@ local abzButton = Instance.new("TextButton")
 abzButton.Parent = Frame
 abzButton.Size = UDim2.new(0,180,0,50)
 abzButton.Position = UDim2.new(0.5,-90,0.5,-25)
-abzButton.Text = "عبز"
+abzButton.Text = "عبز ومتحوسش تفهم"
 abzButton.TextColor3 = Color3.new(1,1,1)
 abzButton.BackgroundColor3 = Color3.fromRGB(70,70,70)
 abzButton.Font = Enum.Font.GothamBold
@@ -53,7 +53,7 @@ Instance.new("UICorner", close).CornerRadius = UDim.new(0,6)
 
 -- الصوت
 local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://17620645740"
+sound.SoundId = "rbxassetid://8315630207"
 sound.Volume = 100
 sound.Parent = workspace
 
@@ -62,7 +62,7 @@ local flashImage = Instance.new("ImageLabel")
 flashImage.Parent = main
 flashImage.Size = UDim2.new(1,0,1,0)
 flashImage.BackgroundTransparency = 1
-flashImage.Image = "rbxassetid://6421296789"
+flashImage.Image = "rbxassetid://8772146864"
 flashImage.Visible = false
 
 -- fling extreme: يجعل اللاعب يبتعد بعيد جدًا
